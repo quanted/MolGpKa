@@ -5,7 +5,7 @@ channels:
   - conda-forge
   - pytorch
 dependencies:
-  - python=3.11
+  - python=3.12
   - jupyter
   - pytorch
   - scikit-learn
@@ -19,3 +19,4 @@ dependencies:
     - py3Dmol
     - requests
     - git+https://github.com/pyg-team/pytorch_geometric
+    - jupyter-lsp==2.2.2

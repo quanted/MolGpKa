@@ -17,10 +17,12 @@ class CTSMolgpka:
 
 	def run_molgpka(self, smiles):
 		mol = Chem.MolFromSmiles(smiles)
+		molgpka_smiles = Chem.MolToSmiles(Chem.MolFromSmiles(Chem.MolToSmiles(mol))) #ammended to return smile string to be used as input for chem axon
 		base_dict, acid_dict = predict(mol)
+		atom_idx = list(base_dict.keys()) + list(acid_dict.keys())
 		pkas = list(base_dict.values()) + list(acid_dict.values())
-		sites=len(pkas)
-		yield sites, pkas
+		sites = len(pkas)
+		yield sites, pkas, atom_idx, molgpka_smiles
 
 	def main(self, smiles):
 		"""
@@ -31,14 +33,28 @@ class CTSMolgpka:
 
 		data = self.run_molgpka(smiles)
 		
-		for n,p in data:
-			pka_sites=n
-			pka_list=p
-			print('SMILES:',smiles,'\n','\t','# of sites:',n,'\n','\t','pKa:',p)
+		for n,p,idx,smiles in data:
+			pka_sites = n
+			pka_list = p
+			molgpka_smiles = smiles
+			molgpka_index = idx
 
 		pka_list = self.convert_floats(pka_list)
 
-		return smiles, pka_sites, pka_list
+		# molgpka_dict=dict(zip(pka_list,molgpka_index))#make dictionary with atom index and pkas
+		# molgpka_dict=dict(zip(molgpka_index, pka_list))#make dictionary with atom index and pkas
+
+		molgpka_dict = {}
+		for key, value in zip(molgpka_index, pka_list):
+			if key in molgpka_dict:
+				molgpka_dict[key].append(value)
+			else:
+				molgpka_dict[key] = [value]
+
+		for key, val in molgpka_dict.items():
+			molgpka_dict[key] = ', '.join(map(str, val))
+
+		return smiles, pka_sites, pka_list, molgpka_smiles, molgpka_dict, molgpka_index
 
 
 

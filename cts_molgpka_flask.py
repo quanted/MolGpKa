@@ -38,12 +38,15 @@ def get_data():
         return {"error": "Missing required molgpka parater 'smiles'"}, 400
     
     try:
-        smiles, num_sites, pka_list = molgpka.main(smiles)
+        smiles, num_sites, pka_list, molgpka_smiles, pka_dict, molgpka_index = molgpka.main(smiles)
         results = {
             "status": True,
             "smiles": smiles,
             "num_sites": num_sites,
-            "pka_list": pka_list
+            "pka_list": pka_list,
+            "pka_dict": pka_dict,
+            "molgpka_smiles": molgpka_smiles,
+            "molgpka_index": molgpka_index
         }
 
         # results = {"test": "testing"}
