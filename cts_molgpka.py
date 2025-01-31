@@ -15,6 +15,22 @@ class CTSMolgpka:
 		"""
 		return [round(float(i), self.pka_dec) for i in pka_list]
 
+	def convert_to_json_serializable(self, obj):
+	    if isinstance(obj, dict):
+	        # Convert dictionary with potential tuple keys to string keys
+	        return {str(k): self.convert_to_json_serializable(v) for k, v in obj.items()}
+	    elif isinstance(obj, list):
+	        return [self.convert_to_json_serializable(item) for item in obj]
+	    elif isinstance(obj, tuple):
+	        return str(obj)
+	    elif isinstance(obj, np.floating):
+	        return float(obj)
+	    elif isinstance(obj, np.integer):
+	        return int(obj)
+	    elif isinstance(obj, (str, int, float, bool, type(None))):
+	        return obj
+	    return str(obj)
+
 	def run_molgpka(self, smiles):
 		mol = Chem.MolFromSmiles(smiles)
 		molgpka_smiles = Chem.MolToSmiles(Chem.MolFromSmiles(Chem.MolToSmiles(mol))) #ammended to return smile string to be used as input for chem axon
@@ -22,7 +38,7 @@ class CTSMolgpka:
 		atom_idx = list(base_dict.keys()) + list(new_idx)
 		pkas = list(base_dict.values()) + list(acid_dict.values())
 		sites = len(pkas)
-		yield sites, pkas, atom_idx, molgpka_smiles
+		yield sites, pkas, atom_idx, molgpka_smiles, acid_dict, base_dict, new_idx
 		
 	def main(self, smiles):
 		
@@ -34,16 +50,33 @@ class CTSMolgpka:
 
 		data = self.run_molgpka(smiles)
 		
-		for n,p,idx,smiles in data:
+		for n,p,idx,smiles,a,b,new_idx in data:
+
+			new_acid_dict = dict(zip(new_idx, a.values()))
+
+			mg_dict = {}
+			mg_tuples = []
+
+			for k,v in new_acid_dict.items():
+				cat='acid'
+				atom=k
+				pka=round(v,2)
+				mg_tuples.append((cat,atom))
+				mg_dict.update({(cat,atom):pka})
+			
+			for k,v in b.items():
+				cat='base'
+				atom=k
+				pka=round(v,2)
+				mg_tuples.append((cat,atom))
+				mg_dict.update({(cat,atom):pka})
+
 			pka_sites = n
 			pka_list = p
 			molgpka_smiles = smiles
 			molgpka_index = idx
 
 		pka_list = self.convert_floats(pka_list)
-
-		# molgpka_dict=dict(zip(pka_list,molgpka_index))#make dictionary with atom index and pkas
-		# molgpka_dict=dict(zip(molgpka_index, pka_list))#make dictionary with atom index and pkas
 
 		molgpka_dict = {}
 		for key, value in zip(molgpka_index, pka_list):
@@ -55,7 +88,9 @@ class CTSMolgpka:
 		for key, val in molgpka_dict.items():
 			molgpka_dict[key] = ', '.join(map(str, val))
 
-		return smiles, pka_sites, pka_list, molgpka_smiles, molgpka_dict, molgpka_index
+		# TODO: Get rid of molgpka_dict once updates are working.
+
+		return smiles, pka_sites, pka_list, molgpka_smiles, molgpka_dict, molgpka_index, mg_dict, mg_tuples
 
 
 

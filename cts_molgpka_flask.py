@@ -38,7 +38,7 @@ def get_data():
         return {"error": "Missing required molgpka parater 'smiles'"}, 400
     
     try:
-        smiles, num_sites, pka_list, molgpka_smiles, pka_dict, molgpka_index = molgpka.main(smiles)
+        smiles, num_sites, pka_list, molgpka_smiles, pka_dict, molgpka_index, mg_dict, mg_tuples = molgpka.main(smiles)
         results = {
             "status": True,
             "smiles": smiles,
@@ -46,16 +46,14 @@ def get_data():
             "pka_list": pka_list,
             "pka_dict": pka_dict,
             "molgpka_smiles": molgpka_smiles,
-            "molgpka_index": molgpka_index
+            "molgpka_index": molgpka_index,
+            "mg_dict": mg_dict,
+            "mg_tuples": mg_tuples
         }
 
-        # results = {"test": "testing"}
-        # results = {'status': True, 'smiles': 'CC(O)=O', 'num_sites': 1, 'pka_list': [8.337571]}
+        valid_json_results = molgpka.convert_to_json_serializable(results)
 
-        logging.warning("Pka list: {}".format(results["pka_list"]))
-        logging.warning("Pka list: {}".format(type(results["pka_list"])))
-
-        logging.warning("RESULTS: {}".format(results))
+        results = json.dumps(valid_json_results)
 
     except Exception as e:
         logging.error("molgpka_flask exception: {}".format(e))
