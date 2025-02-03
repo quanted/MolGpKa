@@ -50,7 +50,7 @@ class CTSMolgpka:
 
 		data = self.run_molgpka(smiles)
 		
-		for n,p,idx,smiles,a,b,new_idx in data:
+		for n,p,idx,molgpka_smiles,a,b,new_idx in data:
 
 			new_acid_dict = dict(zip(new_idx, a.values()))
 
@@ -73,7 +73,6 @@ class CTSMolgpka:
 
 			pka_sites = n
 			pka_list = p
-			molgpka_smiles = smiles
 			molgpka_index = idx
 
 		pka_list = self.convert_floats(pka_list)
