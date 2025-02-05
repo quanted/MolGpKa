@@ -59,8 +59,8 @@ def match_acid(df_smarts_acid, mol):
             for m in match:
                 matches.append([m[index]])
                 prnt_matches.append([m[LS_index]])##
-    matches = unique_acid_match(matches)
-    prnt_matches=unique_acid_match(prnt_matches) ###
+    # matches = unique_acid_match(matches)
+    # prnt_matches=unique_acid_match(prnt_matches) ###
     matches_modify = []
     new_matches=[] ##
     for i in matches:
