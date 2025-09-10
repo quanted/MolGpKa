@@ -6,17 +6,20 @@ channels:
   - pytorch
 dependencies:
   - python=3.12
-  - jupyter
-  - pytorch
-  - scikit-learn
-  - scikit-learn-intelex
-  - numpy
-  - pandas
-  - rdkit
-  - flask
-  - uwsgi
-  - pip:
-    - py3Dmol
-    - requests
-    - git+https://github.com/pyg-team/pytorch_geometric
-    - jupyter-lsp==2.2.2
+  - jupyter=1.1.1
+  - pytorch=2.7.1
+  - scikit-learn=1.7.1
+  - scikit-learn-intelex=2025.6.1
+  - numpy=2.3.3
+  - pandas=2.3.2
+  - rdkit=2025.03.6
+  - flask=3.1.2
+  - uwsgi=2.0.30
+  - requests=2.32.5
+  - py3Dmol=2.5.2
+  - torch-geometric=2.6.1
+  # - pip:
+  #   - py3Dmol
+  #   - requests
+  #   - git+https://github.com/pyg-team/pytorch_geometric
+  #   # - jupyter-lsp==2.2.2
