@@ -1,5 +1,5 @@
-FROM mambaorg/micromamba:1.5.8-alpine3.19
-# FROM continuumio/miniconda3:24.1.2-0
+# FROM mambaorg/micromamba:1.5.8-alpine3.19
+FROM mambaorg/micromamba:2.3.2-alpine3.21
 
 USER root
 # RUN addgroup -S molgpka && adduser -S -G molgpka molgpka
@@ -17,12 +17,12 @@ ARG CONDA_ENV="MolGpka"
 # USER molgpka
 
 COPY environment.yml /src/environment.yml
-RUN micromamba create -n $CONDA_ENV -c conda-forge rdkit python=3.11
+RUN micromamba create -n $CONDA_ENV -c conda-forge rdkit python=3.12
 RUN micromamba install -n $CONDA_ENV -f /src/environment.yml
 
 RUN micromamba install -n $CONDA_ENV -c pytorch -c conda-forge torch-scatter
 
-RUN micromamba run -n $CONDA_ENV pip install numpy==2.0.1
+# RUN micromamba run -n $CONDA_ENV pip install numpy==2.0.1
 
 # RUN micromamba remove -n $CONDA_ENV numpy && \
 # 	micromamba install -n $CONDA_ENV -c conda-forge numpy
