@@ -31,13 +31,11 @@ RUN micromamba install -n $CONDA_ENV -c pytorch -c conda-forge torch-scatter
 
 COPY . /src/
 
-RUN find /opt/conda -name "*test.key" -delete || true
-RUN find /opt/conda/ -name 'test.key' -delete || true
-RUN find /opt/conda/ -name 'localhost.key' -delete || true
-RUN find /opt/conda/ -name 'server.pem' -delete || true
-RUN find /opt/conda/ -name 'client.pem' -delete || true
-RUN find /opt/conda/ -name 'password_protected.pem' -delete || true
-
+# Remove test certificates and files from conda packages
+RUN find /opt/conda/pkgs -name "*.pem" -path "*/test/*" -delete && \
+    find /opt/conda/pkgs -name "*.key" -path "*/test/*" -delete && \
+    find /opt/conda/pkgs -name "*.crt" -path "*/test/*" -delete && \
+    find /opt/conda/pkgs -path "*/info/test*" -type d -exec rm -rf {} + 2>/dev/null || true
 # USER root
 
 COPY docker/flask/uwsgi.ini /etc/uwsgi/uwsgi.ini
